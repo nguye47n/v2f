@@ -22,9 +22,9 @@ if __name__ == '__main__':
 		loss_function = custom_loss(0.8, rho(2.0, 0.01), rho(1.0, 0.01))
 
 		# compile model
-		model.compile(optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-5),
+		model.compile(optimizer = tf.keras.optimizers.RMSprop(learning_rate = PARAM_LEARNING_RATE),
 					  loss="mse",
-					  metrics=["accuracy"])
+					  metrics=[PARAM_METRICS])
 
 		# set up model checkpoint
 		model_checkpoint = ModelCheckpoint(PARAM_WEIGHTS_PATH_1 ,
@@ -46,35 +46,37 @@ if __name__ == '__main__':
 		plt.show()
 
 
-	# ADD NEW ACTION FOR VGG16 TRAINING
+		model = vgg16(PARAM_WEIGHTS_PATH_1)
+
+		# how should we save history for evaluation?
 
 
 	if PARAM_ACTION == 2:
 
 		# instantiate vgg16 model with fine-tuned weights
-		model_1 = vgg16(weights=PARAM_WEIGHTS_PATH_1)
+		model_1 = vgg16(weights=PARAM_WEIGHTS_PATH_1, feature_extraction=True)
 
 		# extract feature vectors
 		train_features = model_1.predict(train_images, verbose=1)
 		val_features = model_1.predict(val_images, verbose=1)
 
 		# reshape inputs for lstm
-		train_features = reshape(train_features, PARAM_TIMESTEPS, 20)
-		val_features = reshape(val_features, PARAM_TIMESTEPS, 20)
+		train_features = reshape(train_features, PARAM_TIMESTEPS, 4096, 20)
+		val_features = reshape(val_features, PARAM_TIMESTEPS, 4096, 20)
 
-		train_labels = reshape(train_labels, PARAM_TIMESTEPS, 20)
-		val_labels = reshape(val_labels, PARAM_TIMESTEPS, 20)
+		train_labels = reshape(train_labels, PARAM_TIMESTEPS, 3, 20)
+		val_labels = reshape(val_labels, PARAM_TIMESTEPS, 3, 20)
 
 		# initiate model
-		model_2 = lstm()
+		model_2 = lstm(timesteps=PARAM_TIMESTEPS)
 
 		# set up custom loss function
 		loss_function = custom_loss(0.8, rho(2.0, 0.01), rho(1.0, 0.01))
 
 		# compile model
-		model_2.compile(optimizer = tf.keras.optimizers.RMSprop(learning_rate=25e-4),
-					  loss="mse",
-					  metrics=["accuracy"])
+		model_2.compile(optimizer = tf.keras.optimizers.RMSprop(learning_rate=PARAM_LEARNING_RATE),
+					  loss="mae",
+					  metrics=PARAM_METRICS) # lr: 25e-4
 
 		# set up model checkpoint
 		model_checkpoint = ModelCheckpoint(PARAM_WEIGHTS_PATH_2,
