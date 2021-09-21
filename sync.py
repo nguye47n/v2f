@@ -22,9 +22,9 @@ def take_closest(myList, myNumber, lo, hi):
     '''
     pos = bisect_left(myList, myNumber, lo=lo, hi=hi)
     if pos == 0:
-        return myList[0]
+        return pos
     if pos == len(myList):
-        return myList[-1]
+        return pos
     before = myList[pos - 1]
     after = myList[pos]
     if after - myNumber < myNumber - before:
