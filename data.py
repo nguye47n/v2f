@@ -14,7 +14,7 @@ from tensorflow.keras.applications.vgg16 import preprocess_input
 
 def load_dataset(img_path, lbl_path):
     '''
-    Load images in png format and labels from a .npy file.
+    Load images in .png format and labels from a .npy file.
     '''
     # load images and labels from path
     images = []
@@ -44,13 +44,12 @@ def load_dataset(img_path, lbl_path):
     return train_images, train_labels, val_images, val_labels, test_images, test_labels
 
 
-def reshape(arr, timesteps, val):
+def reshape(arr, timesteps, features, val):
     '''
     Reshapes 2D array to shape (samples, timesteps, features) for LSTM input, with constant padding if needed.
     '''
-    shape = arr.shape
     padding = timesteps - (arr.shape[0] % timesteps)
-    arr = np.pad(arr, ((0,padding), (0,0)), constant_values=(val))
+    arr = np.pad(arr, ((0, padding), (0,0)), constant_values=(val))
     samples = int(arr.shape[0] / timesteps)
     arr = np.reshape(arr, (samples, timesteps, features))
     return arr
