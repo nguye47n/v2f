@@ -101,10 +101,10 @@ if __name__ == '__main__':
 	if PARAM_ACTION == 3:
 
 		# feature extraction and reshaping
-		model_1 = vgg16(weights=PARAM_WEIGHTS_PATH_1)
+		model_1 = vgg16(weights=PARAM_WEIGHTS_PATH_1, feature_extraction=True)
 		test_features = model_1.predict(test_images, verbose=1)
-		test_features = reshape(test_features, PARAM_TIMESTEPS, 20)
-		test_labels = reshape(test_labels, PARAM_TIMESTEPS, 20)
+		test_features = reshape(test_features, PARAM_TIMESTEPS, 4096, 20)
+		test_labels = reshape(test_labels, PARAM_TIMESTEPS, 3, 20)
 
 		# use LSTM to predict
 		model_2 = lstm(weights=PARAM_WEIGHTS_PATH_2)
