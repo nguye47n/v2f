@@ -38,12 +38,12 @@ def vgg16(fine_tuning=False, feature_extraction=False, weights=None):
 def lstm(weights=None, timesteps=None, mask_value=20):
 
     model = tf.keras.Sequential()
-    model.add(layers.Masking(mask_value, input_shape=(timesteps, 3)))
+    model.add(layers.Masking(mask_value, input_shape=(timesteps, 4096)))
     model.add(layers.LSTM(256, return_sequences=True))
     model.add(layers.Dropout(0.25))
     model.add(layers.LSTM(256, return_sequences=True))
     model.add(layers.Dropout(0.25))
-    model.add(layers.GlobalAveragePooling1D())
+    # model.add(layers.GlobalAveragePooling1D())
     model.add(layers.Dense(3, activation='linear'))
 
     if (weights):
