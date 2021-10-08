@@ -13,10 +13,34 @@ if __name__ == '__main__':
 
 	train_images, train_labels, val_images, val_labels, test_images, test_labels = load_dataset(PARAM_PATH_IMAGES, PARAM_PATH_LABELS)
 
-	if PARAM_ACTION == 1:
+	if PARAM_ACTION == 0:
 
 		# set up model
 		model = vgg16()
+
+		# set up custom loss function
+		loss_function = custom_loss(0.8, rho(2.0, 0.01), rho(1.0, 0.01))
+
+		# compile model
+		model.compile(optimizer = tf.keras.optimizers.RMSprop(learning_rate = PARAM_LEARNING_RATE),
+					  loss="mse",
+					  metrics=[PARAM_METRICS])
+
+		# set up model checkpoint
+		model_checkpoint = ModelCheckpoint(PARAM_WEIGHTS_PATH_1 ,
+						    monitor = PARAM_METRICS,
+						    verbose = 1,
+							save_weights_only = True,
+						    save_best_only = PARAM_SAVE_BEST_ONLY)
+
+		# fit model on data
+		history = model.fit(x=train_images, y=train_labels, verbose = 1, epochs=PARAM_N_EPOCHS, validation_data=(val_images, val_labels), callbacks = [model_checkpoint])
+
+
+	if PARAM_ACTION == 1:
+
+		# set up model
+		model = vgg16(fine_tuning=True, weights=PARAM_WEIGHTS_PATH_1)
 
 		# set up custom loss function
 		loss_function = custom_loss(0.8, rho(2.0, 0.01), rho(1.0, 0.01))
@@ -46,7 +70,7 @@ if __name__ == '__main__':
 		plt.show()
 
 
-		model = vgg16(PARAM_WEIGHTS_PATH_1)
+		model = vgg16(weights=PARAM_WEIGHTS_PATH_1)
 
 		# how should we save history for evaluation?
 
