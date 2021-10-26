@@ -7,6 +7,7 @@ from tensorflow.keras import Model
 from tensorflow.keras.optimizers import RMSprop
 from tensorflow.keras.callbacks import ModelCheckpoint
 import matplotlib.pyplot as plt
+import pandas as pd
 import sys
 
 if __name__ == '__main__':
@@ -34,7 +35,22 @@ if __name__ == '__main__':
 						    save_best_only = PARAM_SAVE_BEST_ONLY)
 
 		# fit model on data
-		history = model.fit(x=train_images, y=train_labels, verbose = 1, epochs=PARAM_N_EPOCHS, validation_data=(val_images, val_labels), callbacks = [model_checkpoint])
+		history = model.fit(x=train_images, y=train_labels, verbose=1, epochs=PARAM_N_EPOCHS, validation_data=(val_images, val_labels), callbacks=[model_checkpoint])
+
+		# plot performance
+		plt.plot(history.history[PARAM_METRICS])
+		plt.plot(history.history['val_' + PARAM_METRICS])
+		plt.title('model ' + PARAM_METRICS)
+		plt.ylabel(PARAM_METRICS)
+		plt.xlabel('epochs')
+		plt.legend(['train', 'test'], loc='upper left')
+		plt.show()
+
+		# save history to csv
+		hist_df = pd.DataFrame(history.history)
+		hist_csv_file = 'history.csv'
+		with open(hist_csv_file, mode='w') as f:
+	    	hist_df.to_csv(f)
 
 
 	if PARAM_ACTION == 1:
@@ -46,33 +62,34 @@ if __name__ == '__main__':
 		loss_function = custom_loss(0.8, rho(2.0, 0.01), rho(1.0, 0.01))
 
 		# compile model
-		model.compile(optimizer = tf.keras.optimizers.RMSprop(learning_rate = PARAM_LEARNING_RATE),
+		model.compile(optimizer = tf.keras.optimizers.RMSprop(learning_rate=PARAM_LEARNING_RATE),
 					  loss="mse",
 					  metrics=[PARAM_METRICS])
 
 		# set up model checkpoint
 		model_checkpoint = ModelCheckpoint(PARAM_WEIGHTS_PATH_1 ,
-						    monitor = PARAM_METRICS,
-						    verbose = 1,
-							save_weights_only = True,
-						    save_best_only = PARAM_SAVE_BEST_ONLY)
+						    monitor=PARAM_METRICS,
+						    verbose=1,
+							save_weights_only=True,
+						    save_best_only=PARAM_SAVE_BEST_ONLY)
 
 		# fit model on data
-		history = model.fit(x=train_images, y=train_labels, verbose = 1, epochs=PARAM_N_EPOCHS, validation_data=(val_images, val_labels), callbacks = [model_checkpoint])
+		history = model.fit(x=train_images, y=train_labels, verbose=1, epochs=PARAM_N_EPOCHS, validation_data=(val_images, val_labels), callbacks=[model_checkpoint])
 
 		# plot performance
-		acc = history.history['accuracy']
-		plt.figure(figsize=(8, 8))
-		plt.plot(acc, label='Accuracy')
-		plt.legend(loc='lower right')
-		plt.ylabel('Accuracy')
-		plt.title('Training Accuracy')
+		plt.plot(history.history[PARAM_METRICS])
+		plt.plot(history.history['val_' + PARAM_METRICS])
+		plt.title('model ' + PARAM_METRICS)
+		plt.ylabel(PARAM_METRICS)
+		plt.xlabel('epochs')
+		plt.legend(['train', 'test'], loc='upper left')
 		plt.show()
 
-
-		model = vgg16(weights=PARAM_WEIGHTS_PATH_1)
-
-		# how should we save history for evaluation?
+		# save history to csv
+		hist_df = pd.DataFrame(history.history)
+		hist_csv_file = 'history.csv'
+		with open(hist_csv_file, mode='w') as f:
+	    	hist_df.to_csv(f)
 
 
 	if PARAM_ACTION == 2:
@@ -121,6 +138,12 @@ if __name__ == '__main__':
 		plt.title('Training Accuracy')
 		plt.show()
 
+		# save history to csv
+		hist_df = pd.DataFrame(history.history)
+		hist_csv_file = 'history.csv'
+		with open(hist_csv_file, mode='w') as f:
+	    	hist_df.to_csv(f)
+
 
 	if PARAM_ACTION == 3:
 
@@ -135,4 +158,7 @@ if __name__ == '__main__':
 		results = model_2.predict(test_features, verbose = 1)
 
 		# save results
-		np.save(PARAM_PATH_TEST_NPY, results)
+		results_df = pd.DataFrame(results)
+		results_csv_file = 'results.csv'
+		with open(results_csv_file, mode='w') as f:
+	    	results_df.to_csv(f)
