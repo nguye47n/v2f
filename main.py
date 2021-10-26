@@ -50,7 +50,7 @@ if __name__ == '__main__':
 		hist_df = pd.DataFrame(history.history)
 		hist_csv_file = 'history.csv'
 		with open(hist_csv_file, mode='w') as f:
-	    	hist_df.to_csv(f)
+			hist_df.to_csv(f)
 
 
 	if PARAM_ACTION == 1:
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 		hist_df = pd.DataFrame(history.history)
 		hist_csv_file = 'history.csv'
 		with open(hist_csv_file, mode='w') as f:
-	    	hist_df.to_csv(f)
+			hist_df.to_csv(f)
 
 
 	if PARAM_ACTION == 2:
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 		hist_df = pd.DataFrame(history.history)
 		hist_csv_file = 'history.csv'
 		with open(hist_csv_file, mode='w') as f:
-	    	hist_df.to_csv(f)
+			hist_df.to_csv(f)
 
 
 	if PARAM_ACTION == 3:
@@ -161,4 +161,4 @@ if __name__ == '__main__':
 		results_df = pd.DataFrame(results)
 		results_csv_file = 'results.csv'
 		with open(results_csv_file, mode='w') as f:
-	    	results_df.to_csv(f)
+			results_df.to_csv(f)
